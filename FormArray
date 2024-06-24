@@ -1,0 +1,100 @@
+In Angular, FormArray is a way to manage an array of form controls. It allows you to dynamically add or remove form controls in a form group. FormArray is particularly useful for managing dynamic forms where the number of form controls can vary based on user input.1. Setup Reactive FormsEnsure you have imported the necessary modules.app.module.ts:typescriptCopy codeimport { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule // Import ReactiveFormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+2. Creating the Form with FormArrayDefine the form model in the component class using FormGroup, FormControl, and FormArray.app.component.ts:typescriptCopy codeimport { Component } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  myForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.myForm = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      skills: this.fb.array([this.createSkill()]) // Initialize with one skill
+    });
+  }
+
+  get skills(): FormArray {
+    return this.myForm.get('skills') as FormArray;
+  }
+
+  createSkill(): FormGroup {
+    return this.fb.group({
+      skill: ['', Validators.required],
+      experience: ['', Validators.required]
+    });
+  }
+
+  addSkill() {
+    this.skills.push(this.createSkill());
+  }
+
+  removeSkill(index: number) {
+    this.skills.removeAt(index);
+  }
+
+  onSubmit() {
+    if (this.myForm.valid) {
+      console.log('Form Submitted', this.myForm.value);
+    } else {
+      console.log('Form Not Valid');
+    }
+  }
+}
+3. Creating the TemplateBind the form model to the template using Angular directives, and provide controls to add and remove skills.app.component.html:htmlCopy code<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+  <label for="name">Name</label>
+  <input id="name" formControlName="name">
+  <div *ngIf="myForm.get('name').invalid && myForm.get('name').touched">
+    <small *ngIf="myForm.get('name').errors.required">Name is required.</small>
+  </div>
+
+  <label for="email">Email</label>
+  <input id="email" formControlName="email">
+  <div *ngIf="myForm.get('email').invalid && myForm.get('email').touched">
+    <small *ngIf="myForm.get('email').errors.required">Email is required.</small>
+    <small *ngIf="myForm.get('email').errors.email">Enter a valid email.</small>
+  </div>
+
+  <div formArrayName="skills">
+    <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i">
+      <label for="skill">Skill {{ i + 1 }}</label>
+      <input id="skill" formControlName="skill">
+      <div *ngIf="skills.at(i).get('skill').invalid && skills.at(i).get('skill').touched">
+        <small *ngIf="skills.at(i).get('skill').errors.required">Skill is required.</small>
+      </div>
+
+      <label for="experience">Experience</label>
+      <input id="experience" formControlName="experience">
+      <div *ngIf="skills.at(i).get('experience').invalid && skills.at(i).get('experience').touched">
+        <small *ngIf="skills.at(i).get('experience').errors.required">Experience is required.</small>
+      </div>
+
+      <button type="button" (click)="removeSkill(i)">Remove Skill</button>
+    </div>
+  </div>
+
+  <button type="button" (click)="addSkill()">Add Skill</button>
+
+  <button type="submit" [disabled]="myForm.invalid">Submit</button>
+</form>
+4. Dynamic Form Control ManagementIn this setup:createSkill(): Returns a new FormGroup for a skill.addSkill(): Adds a new skill FormGroup to the FormArray.removeSkill(index: number): Removes a skill FormGroup from the FormArray.SummaryUsing FormArray in Angular's Reactive Forms allows you to manage an array of form controls dynamically. This approach is highly flexible and useful for scenarios where the number of form fields can change at runtime, such as adding or removing skills in a user profile form. This guide demonstrates the basics of setting up a form with FormArray, creating controls dynamically, and managing form submissions.4o
