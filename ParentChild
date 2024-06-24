@@ -1,4 +1,12 @@
-In Angular, data can be passed between components using different methods, depending on the direction of data flow. Here's a guide on how to pass data from parent to child components and from child to parent components using @Input and @Output with EventEmitter.Passing Data from Parent to Child ComponentStep 1: Define the Input Property in Child Componentchild.component.ts:typescriptCopy codeimport { Component, Input } from '@angular/core';
+In Angular, data can be passed between components using different methods, depending on the direction of data flow. Here's a guide on how to pass data from parent to child components and from child to parent components using `@Input` and `@Output` with `EventEmitter`.
+
+### Passing Data from Parent to Child Component
+
+#### Step 1: Define the Input Property in Child Component
+
+**child.component.ts:**
+```typescript
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-child',
@@ -7,8 +15,20 @@ In Angular, data can be passed between components using different methods, depen
 export class ChildComponent {
   @Input() childData: string; // Input property to receive data from parent
 }
-Step 2: Use the Child Component in Parent Templateparent.component.html:htmlCopy code<app-child [childData]="parentData"></app-child>
-Step 3: Define the Data in Parent Componentparent.component.ts:typescriptCopy codeimport { Component } from '@angular/core';
+```
+
+#### Step 2: Use the Child Component in Parent Template
+
+**parent.component.html:**
+```html
+<app-child [childData]="parentData"></app-child>
+```
+
+#### Step 3: Define the Data in Parent Component
+
+**parent.component.ts:**
+```typescript
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-parent',
@@ -17,7 +37,15 @@ Step 3: Define the Data in Parent Componentparent.component.ts:typescriptCopy co
 export class ParentComponent {
   parentData: string = 'Hello from Parent';
 }
-Passing Data from Child to Parent Component using EventEmitterStep 1: Define the Output Event in Child Componentchild.component.ts:typescriptCopy codeimport { Component, Output, EventEmitter } from '@angular/core';
+```
+
+### Passing Data from Child to Parent Component using EventEmitter
+
+#### Step 1: Define the Output Event in Child Component
+
+**child.component.ts:**
+```typescript
+import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-child',
@@ -30,9 +58,21 @@ export class ChildComponent {
     this.dataEmitter.emit('Hello from Child'); // Emit data to parent
   }
 }
-Step 2: Handle the Output Event in Parent Componentparent.component.html:htmlCopy code<app-child (dataEmitter)="receiveData($event)"></app-child>
+```
+
+#### Step 2: Handle the Output Event in Parent Component
+
+**parent.component.html:**
+```html
+<app-child (dataEmitter)="receiveData($event)"></app-child>
 <p>{{ receivedData }}</p>
-Step 3: Define the Handler Method in Parent Componentparent.component.ts:typescriptCopy codeimport { Component } from '@angular/core';
+```
+
+#### Step 3: Define the Handler Method in Parent Component
+
+**parent.component.ts:**
+```typescript
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-parent',
@@ -45,7 +85,16 @@ export class ParentComponent {
     this.receivedData = data; // Handle the received data from child
   }
 }
-Complete Exampleapp.module.tsEnsure all components are declared and Angular modules are imported correctly.typescriptCopy codeimport { NgModule } from '@angular/core';
+```
+
+### Complete Example
+
+#### app.module.ts
+
+Ensure all components are declared and Angular modules are imported correctly.
+
+```typescript
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { ParentComponent } from './parent/parent.component';
@@ -64,7 +113,14 @@ import { ChildComponent } from './child/child.component';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-parent.component.tsDefine the parent component that sends data to the child and handles data received from the child.typescriptCopy codeimport { Component } from '@angular/core';
+```
+
+#### parent.component.ts
+
+Define the parent component that sends data to the child and handles data received from the child.
+
+```typescript
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-parent',
@@ -78,9 +134,23 @@ export class ParentComponent {
     this.receivedData = data; // Handle the received data from child
   }
 }
-parent.component.htmlInclude the child component and handle the emitted event from the child.htmlCopy code<app-child [childData]="parentData" (dataEmitter)="receiveData($event)"></app-child>
+```
+
+#### parent.component.html
+
+Include the child component and handle the emitted event from the child.
+
+```html
+<app-child [childData]="parentData" (dataEmitter)="receiveData($event)"></app-child>
 <p>{{ receivedData }}</p>
-child.component.tsDefine the child component that receives data from the parent and emits data to the parent.typescriptCopy codeimport { Component, Input, Output, EventEmitter } from '@angular/core';
+```
+
+#### child.component.ts
+
+Define the child component that receives data from the parent and emits data to the parent.
+
+```typescript
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-child',
@@ -95,4 +165,11 @@ export class ChildComponent {
     this.dataEmitter.emit('Hello from Child'); // Emit data to parent
   }
 }
-SummaryPassing Data from Parent to Child: Use the @Input decorator to bind a property in the child component to data from the parent component.Passing Data from Child to Parent: Use the @Output decorator and EventEmitter to emit an event from the child component that the parent component can listen to and handle.These methods allow for effective communication between Angular components, facilitating data flow and interaction within the application.4o
+```
+
+### Summary
+
+- **Passing Data from Parent to Child**: Use the `@Input` decorator to bind a property in the child component to data from the parent component.
+- **Passing Data from Child to Parent**: Use the `@Output` decorator and `EventEmitter` to emit an event from the child component that the parent component can listen to and handle.
+
+These methods allow for effective communication between Angular components, facilitating data flow and interaction within the application.
